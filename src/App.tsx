@@ -4,32 +4,34 @@ import questions from "./data/questions.js";
 
 function App() {
   const [count, setCount] = useState(1);
-  const [correctAnswerVisible, setCorrectAnswerVisible] = useState(false);
-  const [incorrectAnswerVisible, setIncorrectAnswerVisible] = useState(false);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+  const [incorrectAnswer, setIncorrectAnswer] = useState(false);
   const [score, setScore] = useState(0);
   const [question, setQuestion] = useState(getRandomQuestion());
+  const [showNextQuestion, setShowNextQuestion] = useState(false);
 
   function getRandomQuestion() {
     return questions[Math.floor(Math.random() * questions.length)];
   }
 
   function handleSubmitAnswer(answer: string) {
-    return function () {
-      setCount(count + 1);
+    return () => {
       if (answer === question.correctAnswer) {
         setScore(score + 1);
-        setCorrectAnswerVisible(true);
+        setCorrectAnswer(true);
       } else {
-        setIncorrectAnswerVisible(true);
+        setIncorrectAnswer(true);
       }
-
-      // add a delay before showing the next question
-      setTimeout(() => {
-        setCorrectAnswerVisible(false);
-        setIncorrectAnswerVisible(false);
-        setQuestion(getRandomQuestion());
-      }, 1500);
+      setShowNextQuestion(true);
     };
+  }
+
+  function handleNextQuestion() {
+    setCount(count + 1);
+    setCorrectAnswer(false);
+    setIncorrectAnswer(false);
+    setQuestion(getRandomQuestion());
+    setShowNextQuestion(false);
   }
 
   return (
@@ -49,9 +51,15 @@ function App() {
           </li>
         ))}
       </ul>
-      {correctAnswerVisible && <p>Correct!</p>}
-      {incorrectAnswerVisible && <p>Incorrect!</p>}
+
+      {correctAnswer && <p>Correct!</p>}
+      {incorrectAnswer && (
+        <p>Incorrect! The correct answer was {question.correctAnswer}</p>
+      )}
       <h3>Score: {score}/10</h3>
+      {showNextQuestion && (
+        <button onClick={handleNextQuestion}>Next Question</button>
+      )}
     </div>
   );
 }
