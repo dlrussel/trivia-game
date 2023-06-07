@@ -4,6 +4,8 @@ import questions from "./data/questions.js";
 
 function App() {
   const [count, setCount] = useState(1);
+  const [correctAnswerVisible, setCorrectAnswerVisible] = useState(false);
+  const [incorrectAnswerVisible, setIncorrectAnswerVisible] = useState(false);
   const [score, setScore] = useState(0);
   const [question, setQuestion] = useState(getRandomQuestion());
 
@@ -11,21 +13,22 @@ function App() {
     return questions[Math.floor(Math.random() * questions.length)];
   }
 
-  function correctAnswer() {
-    console.log("Correct!");
-    return true;
-  }
-
   function handleSubmitAnswer(answer: string) {
     return function () {
       setCount(count + 1);
       if (answer === question.correctAnswer) {
-        correctAnswer();
         setScore(score + 1);
+        setCorrectAnswerVisible(true);
       } else {
-        console.log("Incorrect!");
+        setIncorrectAnswerVisible(true);
       }
-      setQuestion(getRandomQuestion());
+
+      // add a delay before showing the next question
+      setTimeout(() => {
+        setCorrectAnswerVisible(false);
+        setIncorrectAnswerVisible(false);
+        setQuestion(getRandomQuestion());
+      }, 1500);
     };
   }
 
@@ -46,6 +49,8 @@ function App() {
           </li>
         ))}
       </ul>
+      {correctAnswerVisible && <p>Correct!</p>}
+      {incorrectAnswerVisible && <p>Incorrect!</p>}
       <h3>Score: {score}/10</h3>
     </div>
   );
