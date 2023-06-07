@@ -8,7 +8,7 @@ function App() {
   const [incorrectAnswer, setIncorrectAnswer] = useState(false);
   const [score, setScore] = useState(0);
   const [question, setQuestion] = useState(getRandomQuestion());
-  const [showNextQuestion, setShowNextQuestion] = useState(false);
+  const [answerSubmitted, setAnswerSubmitted] = useState(false);
 
   function getRandomQuestion() {
     return questions[Math.floor(Math.random() * questions.length)];
@@ -22,7 +22,7 @@ function App() {
       } else {
         setIncorrectAnswer(true);
       }
-      setShowNextQuestion(true);
+      setAnswerSubmitted(true);
     };
   }
 
@@ -31,23 +31,23 @@ function App() {
     setCorrectAnswer(false);
     setIncorrectAnswer(false);
     setQuestion(getRandomQuestion());
-    setShowNextQuestion(false);
+    setAnswerSubmitted(false);
   }
 
   return (
     <div>
       <h1>Canadian Trivia</h1>
-      <h2>Question {count}</h2>
+      <h2>Question {count}/10</h2>
 
       <h2>{question.question}</h2>
-      <ul>
+      <ul className="answers">
         {question.answers.map((answer) => (
           <li
             key={answer}
             className="answer"
             onClick={handleSubmitAnswer(answer)}
           >
-            {answer}
+            <button disabled={answerSubmitted}>{answer}</button>
           </li>
         ))}
       </ul>
@@ -57,7 +57,7 @@ function App() {
         <p>Incorrect! The correct answer was {question.correctAnswer}</p>
       )}
       <h3>Score: {score}/10</h3>
-      {showNextQuestion && (
+      {answerSubmitted && (
         <button onClick={handleNextQuestion}>Next Question</button>
       )}
     </div>
